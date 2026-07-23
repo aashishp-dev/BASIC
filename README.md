@@ -1,188 +1,123 @@
 # 🩺 DoctoraAI
 
+<div align="center">
+
 ### **AI-Powered Healthcare Intelligence Platform**
 
-<p align="center">
-  <b>Understand • Organize • Monitor • Improve Your Health</b>
-</p>
+**Understand • Organize • Monitor • Improve Your Health**
 
-<p align="center">
-  An AI-powered healthcare platform that transforms prescriptions, medical reports, symptoms, and health records into personalized, actionable insights while keeping users in control through human verification.
-</p>
+*Transforming prescriptions, medical reports, symptoms, and health records into personalized, actionable healthcare insights through responsible Artificial Intelligence.*
 
----
+![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
+![AI](https://img.shields.io/badge/AI-Gemini-orange)
 
-## 🚀 Vision
-
-Healthcare should be **intelligent, preventive, accessible, and trustworthy**.
-
-DoctoraAI is building an AI Healthcare Intelligence Platform that helps people understand their health, manage medications, track long-term wellness, and make informed decisions alongside qualified healthcare professionals.
-
-Our mission is not to replace doctors—it is to make healthcare information easier to understand and manage.
+</div>
 
 ---
 
-# 🌍 The Problem
+# 📖 About
 
-Millions of people struggle with:
+**DoctoraAI** is an AI-powered Healthcare Intelligence Platform designed to help individuals better understand, organize, and manage their health.
 
-* Illegible handwritten prescriptions
+Instead of functioning as a traditional AI chatbot, DoctoraAI combines Artificial Intelligence with human verification to simplify complex healthcare information, improve medication management, analyze medical reports, and provide personalized health insights while keeping users in control.
+
+Our goal is simple:
+
+> **Make healthcare easier to understand, easier to manage, and more proactive through responsible AI.**
+
+---
+
+# 🎯 Vision
+
+To become the world's most trusted AI Healthcare Intelligence Platform that empowers individuals with accessible, personalized, explainable, and preventive healthcare intelligence.
+
+---
+
+# 🚀 Mission
+
+Build AI that assists patients—not replaces doctors.
+
+DoctoraAI helps users:
+
+* Understand medical information
+* Organize health records
+* Manage medications
+* Track long-term health
+* Prepare for doctor consultations
+* Detect potential health risks
+* Improve healthcare accessibility
+
+---
+
+# ❗ The Problem
+
+Millions of people experience problems such as:
+
+* Difficult-to-read handwritten prescriptions
 * Complex medical reports
-* Missing medication reminders
+* Missed medications
 * Drug interaction risks
 * Lost health records
-* No centralized medical history
-* Limited preventive healthcare awareness
+* Poor long-term health tracking
 * Difficulty understanding medical terminology
+* Lack of preventive healthcare guidance
 
-These issues lead to confusion, missed treatments, medication errors, and poor long-term health management.
+These challenges can lead to confusion, medication errors, and delayed treatment.
 
 ---
 
 # 💡 Our Solution
 
-DoctoraAI combines Artificial Intelligence, Human Verification, and Health Intelligence into one platform.
+DoctoraAI brings together AI, healthcare intelligence, and human verification in one platform.
 
-Instead of functioning as a simple AI chatbot, DoctoraAI acts as a personal healthcare companion that helps users throughout their healthcare journey.
+Users can:
+
+* Analyze symptoms
+* Read prescriptions
+* Understand lab reports
+* Organize medical history
+* Track medicines
+* Receive reminders
+* Detect medicine interactions
+* Monitor health trends
+* Build a lifelong digital health profile
 
 ---
 
-# ✨ Core Features
+# ✨ Current Features
 
 ## 🩺 AI Symptom Assessment
 
-* Intelligent symptom analysis
+Describe your symptoms in natural language and receive:
+
 * Possible conditions
 * Severity estimation
-* Differential diagnosis
 * Recommended medical specialist
 * Evidence-based explanations
-* AI confidence score
+* Confidence score
+* General health guidance
 
 ---
 
-## 💊 Smart Prescription Intelligence
+## 💊 Smart Prescription Analyzer
 
-Upload a prescription and let DoctoraAI analyze it.
-
-### AI automatically extracts:
+Upload a prescription and DoctoraAI automatically extracts:
 
 * Medicine names
 * Dosage
 * Frequency
 * Duration
-* Route of administration
-* Doctor details
+* Doctor information
 * Prescription summary
-
----
-
-## ✅ Human-in-the-Loop Verification
-
-Healthcare requires accuracy.
-
-Instead of forcing users to trust AI blindly, DoctoraAI verifies confidence before processing.
-
-### High Confidence
-
-✔ Prescription processed automatically.
-
-### Low Confidence
-
-Users can:
-
-* Edit medicine names
-* Correct dosage
-* Change timing
-* Add missing medicines
-* Remove incorrect medicines
-* Save a verified prescription
-
-The verified prescription becomes the trusted source for all future features.
-
----
-
-## ➕ Manual Medicine Entry
-
-Users can manually add medicines whenever needed.
-
-Fields include:
-
-* Medicine Name
-* Generic Name
-* Brand Name
-* Strength
-* Dosage
-* Morning
-* Afternoon
-* Evening
-* Night
-* Before Food
-* After Food
-* Duration
-* Instructions
-* Notes
-
----
-
-## 🔍 Smart Medicine Search
-
-Instead of typing everything manually:
-
-* Auto-complete medicine names
-* Brand suggestions
-* Generic medicine suggestions
-* Spelling correction
-
----
-
-## 🤖 Medicine Intelligence
-
-Every medicine includes:
-
-* Purpose
-* Usage instructions
-* Side effects
-* Drug interactions
-* Food interactions
-* Alcohol warnings
-* Pregnancy warnings
-* Storage instructions
-* Missed dose guidance
-
----
-
-## ⚠ Drug Interaction Checker
-
-Automatically detects:
-
-* Drug–drug interactions
-* Duplicate medicines
-* Allergy conflicts
-* Contraindications
-* High-risk combinations
-
----
-
-## ⏰ Smart Medication Reminder
-
-Never miss a medicine again.
-
-Features:
-
-* Personalized reminders
-* Meal timing reminders
-* Water reminders
-* Missed dose alerts
-* Refill reminders
-* Medicine expiry reminders
-* Medication adherence tracking
 
 ---
 
 ## 📄 AI Medical Report Analyzer
 
-Supports:
+Supports common medical reports including:
 
 * CBC
 * Blood Sugar
@@ -194,27 +129,131 @@ Supports:
 * MRI
 * CT Scan
 * X-Ray
-* Health Checkup Reports
 
-AI explains reports in simple language and highlights important findings.
+AI converts technical medical terminology into simple explanations and highlights important values.
+
+---
+
+## 💊 Medicine Information
+
+Each medicine includes:
+
+* Purpose
+* Dosage guidance
+* Side effects
+* Food interactions
+* Alcohol precautions
+* Storage instructions
+* Missed dose advice
+
+---
+
+## ⏰ Medicine Reminder
+
+Never miss your medicines again.
+
+Features include:
+
+* Daily reminders
+* Meal timing reminders
+* Missed dose alerts
+* Refill reminders
+* Expiry reminders
+
+---
+
+## 🏥 Nearby Doctors & Hospitals
+
+Locate nearby healthcare providers and receive specialist recommendations based on your health concerns.
+
+---
+
+## 🤖 AI Medical Assistant
+
+Ask healthcare-related questions and receive clear, easy-to-understand responses that help users better understand their medical information.
+
+---
+
+# 🌟 New Features
+
+## ✅ Human-in-the-Loop Prescription Verification
+
+Healthcare requires accuracy.
+
+When AI confidence is high:
+
+✔ Prescription is processed automatically.
+
+When confidence is low:
+
+The user can:
+
+* Edit medicine names
+* Correct dosages
+* Modify timing
+* Add missing medicines
+* Remove incorrect medicines
+* Save a verified prescription
+
+The verified prescription becomes the trusted source for future features.
+
+---
+
+## ➕ Manual Medicine Entry
+
+Users can manually create prescriptions by entering:
+
+* Medicine Name
+* Brand Name
+* Generic Name
+* Strength
+* Dosage
+* Morning
+* Afternoon
+* Evening
+* Night
+* Before/After Food
+* Duration
+* Notes
+
+---
+
+## 🔍 Smart Medicine Search
+
+* Auto-complete
+* Brand suggestions
+* Generic medicine suggestions
+* Spelling correction
+
+---
+
+## ⚠ Drug Interaction Checker
+
+Automatically detects:
+
+* Drug–drug interactions
+* Duplicate medicines
+* Allergy conflicts
+* Contraindications
+* High-risk medicine combinations
 
 ---
 
 ## 📊 Health Timeline
 
-Visualize your complete medical history.
-
-Track:
+Track your health journey through:
 
 * Blood Pressure
 * Blood Sugar
 * Cholesterol
-* BMI
 * Weight
+* BMI
+* Medical reports
 * Prescriptions
-* Reports
 * Diagnoses
-* Consultations
+* Doctor visits
+
+Visual trends help users understand long-term progress.
 
 ---
 
@@ -222,20 +261,19 @@ Track:
 
 A continuously evolving digital health profile that learns from:
 
-* Medical history
 * Reports
 * Prescriptions
-* Lifestyle
 * Symptoms
-* Health trends
+* Lifestyle
+* Medical history
 
 This enables increasingly personalized healthcare insights.
 
 ---
 
-## 🔮 Health Risk Prediction *(Planned)*
+## 📈 Health Risk Prediction *(Planned)*
 
-Predict potential future risks, including:
+Estimate future risks for:
 
 * Diabetes
 * Hypertension
@@ -244,13 +282,13 @@ Predict potential future risks, including:
 * Fatty Liver
 * Obesity
 
-The platform provides preventive recommendations based on health trends.
+Along with preventive health recommendations.
 
 ---
 
 ## 🧠 Preventive Health Coach *(Planned)*
 
-Receive AI-powered recommendations on:
+Receive AI-powered recommendations for:
 
 * Nutrition
 * Exercise
@@ -263,16 +301,16 @@ Receive AI-powered recommendations on:
 
 ## 📔 AI Health Journal *(Planned)*
 
-Track daily:
+Track:
 
-* Sleep
 * Mood
-* Exercise
+* Sleep
 * Water intake
-* Pain level
+* Exercise
+* Pain
 * Symptoms
 
-AI identifies long-term patterns and wellness trends.
+AI identifies long-term wellness patterns.
 
 ---
 
@@ -282,8 +320,8 @@ Generate a one-tap emergency profile containing:
 
 * Blood Group
 * Allergies
-* Current Medicines
 * Chronic Diseases
+* Current Medicines
 * Emergency Contacts
 * Recent Prescriptions
 
@@ -291,7 +329,7 @@ Designed for quick access during emergencies.
 
 ---
 
-## 👨‍👩‍👧 Family Health Dashboard *(Planned)*
+## 👨‍👩‍👧 Family Dashboard *(Planned)*
 
 Manage healthcare for:
 
@@ -299,27 +337,27 @@ Manage healthcare for:
 * Children
 * Spouse
 
-Each family member has a secure, separate medical profile.
+Each family member has an independent, secure health profile.
 
 ---
 
 ## 👨‍⚕ Doctor Visit Preparation
 
-Before every consultation, DoctoraAI creates:
+Generate a consultation summary including:
 
-* Symptom summary
-* Current medicines
+* Current symptoms
+* Active medicines
 * Recent reports
 * Medical history
 * Suggested questions for the doctor
 
 ---
 
-## 🧠 Multi-Agent Medical Consensus Engine *(Future Vision)*
+## 🧩 Multi-Agent Medical Consensus Engine *(Future)*
 
 Instead of relying on a single AI model, multiple specialist AI agents independently analyze the same case.
 
-Example agents:
+Example specialist agents:
 
 * General Physician
 * Cardiologist
@@ -327,93 +365,24 @@ Example agents:
 * Pharmacologist
 * Radiologist
 
-A Validator AI compares all analyses, resolves disagreements, calculates confidence, and generates a transparent recommendation.
+A Validator AI compares the analyses, identifies disagreements, calculates confidence, and generates a transparent recommendation.
 
 ---
 
-# 🛡 Privacy & Security
+# 🔒 Privacy First
+
+Your health data belongs to you.
+
+DoctoraAI is designed around:
 
 * Secure authentication
-* Encrypted medical records
+* Encrypted storage
 * User-controlled data sharing
-* Transparent AI responses
+* Transparent AI reasoning
 * Human verification for uncertain outputs
 
 ---
 
-# 🏗 Tech Stack
+# 🌍 Long-Term Vision
 
-### Frontend
-
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
-
-### Backend
-
-* FastAPI
-* Python
-
-### AI
-
-* Gemini API
-* OCR
-* Medical NLP
-* Multi-Agent AI Architecture
-
-### Database
-
-* PostgreSQL / MongoDB
-
-### Authentication
-
-* Clerk / Firebase Authentication
-
----
-
-# 🎯 Roadmap
-
-### Phase 1
-
-* AI Symptom Assessment
-* Prescription Intelligence
-* Human Verification
-* Medicine Reminders
-* Drug Interaction Checker
-* Medical Report Analyzer
-* Health Timeline
-
-### Phase 2
-
-* AI Health Twin
-* Preventive Health Coach
-* Health Journal
-* Emergency Health Summary
-* Family Dashboard
-
-### Phase 3
-
-* Multi-Agent Medical Consensus Engine
-* Doctor Portal
-* Hospital Dashboard
-* Wearable Integration
-* Insurance Integration
-* Voice Assistant
-* Telemedicine
-
----
-
-# ⚠ Disclaimer
-
-DoctoraAI is an AI-assisted healthcare platform intended to help users understand and organize medical information.
-
-It is **not a replacement for licensed healthcare professionals** and should not be used as the sole basis for diagnosis or treatment decisions. Always consult a qualified medical practitioner for professional medical advice.
-
----
-
-# ❤️ Our Mission
-
-**Making healthcare understandable, organized, and accessible through responsible Artificial Intelligence.**
-
-If this project inspires you, consider giving it a ⭐ and contributing to the future of intelligent healthcare.
+DoctoraAI aims to evolve into a comprehensive AI healthcare ecosystem that helps individuals manage their health from daily medication reminders to long-term preventive care, while supporting—not replacing—licensed healthcare professionals.
