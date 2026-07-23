@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<style>
+  html, body { 
+    background-color: #10131a !important; 
+    color: #e1e2ec !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+</style>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DoctoraAI Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-panel {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(51, 65, 85, 0.5);
+    }
+    .ai-gradient-border {
+        position: relative;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 1.5rem;
+    }
+    .ai-gradient-border::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 1.5rem;
+        padding: 1px;
+        background: linear-gradient(to right, #3B82F6, #4edea3);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+    @keyframes fadeSlideIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .agent-active { animation: fadeSlideIn 0.4s ease forwards; }
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+    }
+    .glow-dot { animation: pulse-glow 2s infinite ease-in-out; }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+    }
+    .skeleton {
+        background: linear-gradient(90deg, #1e293b 25%, #2d3f55 50%, #1e293b 75%);
+        background-size: 1000px 100%;
+        animation: shimmer 2s infinite;
+        border-radius: 8px;
+    }
+</style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "outline-variant": "#424754","tertiary-fixed-dim": "#4edea3","primary-fixed": "#d8e2ff",
+                  "surface-container-high": "#272a31","on-secondary-fixed": "#0d1c2d","secondary-fixed-dim": "#b9c8de",
+                  "tertiary-fixed": "#6ffbbe","inverse-on-surface": "#2e3038","secondary": "#b9c8de",
+                  "on-tertiary-fixed": "#002113","on-tertiary-container": "#00311f","background": "#10131a",
+                  "primary-fixed-dim": "#adc6ff","primary": "#adc6ff","surface-bright": "#363941",
+                  "on-primary-fixed": "#001a42","on-primary-container": "#00285d","surface-container-low": "#191b23",
+                  "primary-container": "#4d8eff","outline": "#8c909f","inverse-primary": "#005ac2",
+                  "on-tertiary-fixed-variant": "#005236","on-surface": "#e1e2ec","inverse-surface": "#e1e2ec",
+                  "error": "#ffb4ab","surface-container-lowest": "#0b0e15","on-surface-variant": "#c2c6d6",
+                  "on-secondary": "#233143","on-primary": "#002e6a","surface-container": "#1d2027",
+                  "on-secondary-container": "#a7b6cc","on-secondary-fixed-variant": "#39485a","on-error": "#690005",
+                  "tertiary": "#4edea3","on-tertiary": "#003824","tertiary-container": "#00a572",
+                  "surface-variant": "#32353c","on-primary-fixed-variant": "#004395","surface": "#10131a",
+                  "on-error-container": "#ffdad6","secondary-fixed": "#d4e4fa","on-background": "#e1e2ec",
+                  "secondary-container": "#39485a","error-container": "#93000a","surface-dim": "#10131a",
+                  "surface-container-highest": "#32353c","surface-tint": "#adc6ff"
+          },
+          "borderRadius": { "DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px" },
+          "spacing": {
+                  "sm": "12px","lg": "48px","xs": "4px","xl": "80px","md": "24px","gutter": "24px",
+                  "margin-mobile": "16px","base": "8px","container-max": "1280px"
+          },
+          "fontFamily": {
+                  "display-lg": ["Inter"],"headline-lg-mobile": ["Inter"],"body-lg": ["Inter"],
+                  "headline-md": ["Inter"],"body-md": ["Inter"],"label-md": ["Inter"],
+                  "caption": ["Inter"],"headline-lg": ["Inter"]
+          },
+          "fontSize": {
+                  "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                  "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                  "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                  "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                  "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                  "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                  "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                  "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+</script>
+
+<style id="floating-cards-final">
+.float-card { animation: floatGlow 6s ease-in-out infinite; transition: all .3s ease; }
+@keyframes floatGlow {
+    0%,100% { transform: translateY(0px); box-shadow: 0 0 0 rgba(78,222,163,0); }
+    50% { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(78,222,163,.15); }
+}
+</style>
+
+<style id="startup-and-medical-effects">
+#startup-screen{position:fixed;inset:0;background:#10131a;display:flex;justify-content:center;align-items:center;z-index:99999;transition:opacity .6s ease;}
+.startup-box{text-align:center;color:white}
+.startup-logo{font-size:5rem;color:#4edea3;animation:pulseBoot 1.5s infinite}
+.loader{width:260px;height:8px;background:#1e293b;border-radius:999px;overflow:hidden;margin-top:15px}
+.loader-fill{height:100%;width:0;background:#4edea3;animation:loadbar 3s forwards}
+@keyframes loadbar{to{width:100%;}}
+@keyframes pulseBoot{50%{transform:scale(1.08);}}
+.medical-icons span{position:fixed;font-size:8rem;color:rgba(78,222,163,.12);pointer-events:none;z-index:-1;animation:floatMedical 10s ease-in-out infinite;}
+.medical-icons span:nth-child(1){top:10%;left:5%;}
+.medical-icons span:nth-child(2){top:60%;right:10%;animation-delay:3s;}
+.medical-icons span:nth-child(3){bottom:15%;left:45%;animation-delay:6s;}
+@keyframes floatMedical{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+.scan-box{position:relative;overflow:hidden}
+.scan-box::after{content:'';position:absolute;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,#4edea3,transparent);box-shadow:0 0 15px #4edea3;animation:scanline 3s linear infinite;}
+@keyframes scanline{0%{top:0;opacity:0}20%,80%{opacity:1}100%{top:100%;opacity:0}}
+</style>
+</head>
+
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-32">
+
+<!-- Startup Screen -->
+<div id="startup-screen">
+<div class="startup-box">
+<div class="startup-logo">⚕</div>
+<h1>DoctoraAI</h1>
+<p style="color:#9ca3af;margin-top:10px;">AI-Powered Healthcare Assistant</p>
+<p id="boot-text">Initializing Clinical Intelligence</p>
+<div class="loader"><div class="loader-fill"></div></div>
+</div>
+</div>
+
+<div class="medical-icons"><span>⚕</span><span>🩺</span><span>✚</span></div>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 flex items-center justify-between px-margin-mobile md:px-gutter h-16">
+    <div class="flex items-center gap-base">
+        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'opsz' 32;">clinical_notes</span>
+        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">DoctoraAI</h1>
+    </div>
+</header>
+
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 space-y-lg">
+
+    <!-- Input Section -->
+    <section class="space-y-md max-w-3xl">
+        <div class="space-y-xs">
+            <p class="text-primary font-label-md uppercase tracking-widest">Symptom Analysis</p>
+            <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface leading-tight">What symptoms are you experiencing?</h2>
+        </div>
+        <div id="symptom-panel" class="glass-panel rounded-[2rem] p-base md:p-sm group focus-within:ring-2 ring-primary/30 transition-all">
+            <div class="relative">
+                <textarea id="symptom-input" class="w-full bg-transparent border-none focus:ring-0 text-body-lg text-on-surface placeholder-on-surface-variant/50 p-md resize-none min-h-[140px]" placeholder="e.g. Persistent headache for 3 days, localized behind the left eye, accompanied by sensitivity to light..."></textarea>
+                <div class="flex items-center justify-between mt-sm p-base">
+                    <div class="flex items-center gap-sm">
+                        <button id="voice-btn" class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md">
+                            <span class="material-symbols-outlined text-[20px]">mic</span> Voice
+                        </button>
+                        <!-- SINGLE lab file input -->
+                        <input type="file" id="lab-file" accept=".pdf,.jpg,.jpeg,.png" hidden>
+                        <button id="attach-labs-btn" type="button" class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md">
+                            <span class="material-symbols-outlined text-[20px]">attachment</span>
+                            <span id="attach-labs-label">Attach Labs</span>
+                        </button>
+                    </div>
+                    <button id="analyze-btn" class="bg-primary hover:bg-primary-container text-on-primary font-label-md px-md py-sm rounded-xl transition-all flex items-center gap-sm active:scale-95 shadow-lg shadow-primary/20">
+                        Analyze
+                        <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agent Status -->
+    <section id="agent-status" class="hidden space-y-md max-w-3xl float-card">
+        <div class="glass-panel rounded-xl p-md space-y-sm">
+            <p class="text-primary font-label-md uppercase tracking-widest">Consulting Agents</p>
+            <div class="space-y-xs">
+                <div id="status-a" class="flex items-center gap-sm text-on-surface-variant text-body-md">
+                    <span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span> Diagnosing the issue
+                </div>
+                <div id="status-b" class="flex items-center gap-sm text-on-surface-variant text-body-md">
+                    <span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span> Identifying the most appropriate treatment
+                </div>
+                <div id="status-c" class="flex items-center gap-sm text-on-surface-variant text-body-md">
+                    <span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span> Conducting research and analysis
+                </div>
+                <div id="status-v" class="flex items-center gap-sm text-on-surface-variant text-body-md">
+                    <span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span> Formulating recommendations
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Results -->
+    <section id="final-section" class="space-y-md">
+        <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+            <h3 class="font-headline-md text-headline-md text-on-surface">Final Response</h3>
+        </div>
+        <div class="ai-gradient-border p-md md:p-lg float-card">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+                <div class="md:col-span-2 space-y-md">
+                    <div class="flex items-center gap-base">
+                        <div class="h-1.5 w-1.5 bg-primary rounded-full"></div>
+                        <h4 class="text-primary font-label-md uppercase">Synthetic Insights</h4>
+                    </div>
+                    <div id="final-response-text" class="text-body-lg text-on-surface">
+                        Enter your symptoms above and click Analyze to get started.
+                    </div>
+                </div>
+                <div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 space-y-sm">
+                    <h4 class="font-label-md text-on-surface-variant uppercase">Potential Risk Level</h4>
+                    <div class="flex items-center justify-between">
+                        <span id="risk-label" class="text-headline-md text-tertiary">—</span>
+                        <span class="material-symbols-outlined text-tertiary">warning</span>
+                    </div>
+                    <div class="w-full bg-outline-variant/20 h-2 rounded-full overflow-hidden">
+                        <div id="risk-bar" class="bg-tertiary h-full w-0 transition-all duration-700"></div>
+                    </div>
+                    <p class="text-caption text-on-surface-variant">Risk factor analysis based on reported duration and frequency.</p>
+                </div>
+                <div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 space-y-sm">
+                    <h4 class="font-label-md text-on-surface-variant uppercase">Recommended Specialist</h4>
+                    <div id="specialist-name" class="text-headline-md text-primary">--</div>
+                    <a id="maps-link" target="_blank" class="text-primary hover:underline flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[16px]">location_on</span>
+                        Find Nearby Doctor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Papers -->
+    <section class="space-y-md mt-lg">
+        <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary">description</span>
+            <h3 class="font-headline-md text-on-surface">Research Papers</h3>
+        </div>
+        <div id="research-container" class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10">
+            Research papers will appear here after analysis.
+        </div>
+    </section>
+
+    <!-- Lab Report Analysis -->
+    <section id="lab-report-section" class="space-y-md mt-lg">
+        <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary">biotech</span>
+            <h3 class="font-headline-md text-on-surface">Lab Report Analysis</h3>
+        </div>
+        <div id="lab-result">
+            <p class="text-caption text-on-surface-variant bg-surface-container-low rounded-xl p-md border border-outline-variant/10">
+                Upload a lab report to analyze.
+            </p>
+        </div>
+    </section>
+
+    <!-- Prescription Intelligence -->
+    <section class="space-y-md mt-lg">
+        <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary">medication</span>
+            <h3 class="font-headline-md text-on-surface">Prescription Intelligence</h3>
+        </div>
+        <div class="glass-panel rounded-[2rem] p-md space-y-sm">
+            <p class="text-on-surface-variant text-body-md">Upload a prescription to extract medicines, dosage, timing, and warnings.</p>
+            <div class="flex items-center gap-sm">
+                <!-- SINGLE prescription file input -->
+                <input type="file" id="prescription-file" accept=".pdf,.jpg,.jpeg,.png" hidden>
+                <button id="attach-prescription-btn" type="button" class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-md">
+                    <span class="material-symbols-outlined text-[20px]">upload_file</span>
+                    <span id="attach-prescription-label">Upload Prescription</span>
+                </button>
+                <button id="analyze-prescription-btn" class="bg-primary hover:bg-primary-container text-on-primary font-label-md px-md py-sm rounded-xl transition-all flex items-center gap-sm active:scale-95 shadow-lg shadow-primary/20">
+                    Analyze
+                    <span class="material-symbols-outlined text-[18px]">medication</span>
+                </button>
+            </div>
+        </div>
+        <div id="prescription-result">
+
+            <p class="text-caption text-on-surface-variant bg-surface-container-low rounded-xl p-md border border-outline-variant/10">
+                Upload a prescription to get started.
+            </p>
+        </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="pt-lg pb-md text-center">
+        <p class="text-caption text-on-surface-variant/60 max-w-md mx-auto">
+            DoctoraAI is for informational purposes only. Not a substitute for professional medical advice.
+        </p>
+    </div>
+
+</main>
+
+<!-- Visual Accents -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+    <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[120px]"></div>
+    <div class="absolute bottom-[10%] -left-[5%] w-[40%] h-[40%] rounded-full bg-tertiary/5 blur-[100px]"></div>
+</div>
+
+<script>
+    // Auto resize textarea
+    const textarea = document.getElementById('symptom-input');
+    textarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+
+    // Enter submits
+    textarea.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            analyzeBtn.click();
+        }
+    });
+
+    // Voice Input
+    const voiceBtn = document.getElementById('voice-btn');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        let isListening = false, baseText = '', finalizedChunks = [];
+
+        voiceBtn.addEventListener('click', () => {
+            if (!isListening) {
+                baseText = textarea.value.trim();
+                if (baseText) baseText += ' ';
+                finalizedChunks = [];
+                try {
+                    recognition.start();
+                    isListening = true;
+                    voiceBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]" style="color:#4edea3;animation:pulse-glow 1s infinite;">mic</span> Tap to stop';
+                } catch(e) { console.error(e); }
+            } else {
+                recognition.stop();
+            }
+        });
+
+        recognition.onresult = (event) => {
+            let interim = '';
+            for (let i = 0; i < event.results.length; i++) {
+                if (event.results[i].isFinal) finalizedChunks[i] = event.results[i][0].transcript;
+                else interim += event.results[i][0].transcript;
+            }
+            textarea.value = baseText + finalizedChunks.filter(Boolean).join(' ') + (interim ? ' ' + interim : '');
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            voiceBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">mic</span> Voice';
+            textarea.value = textarea.value.replace(/\s+/g, ' ').trim();
+        };
+
+        recognition.onerror = (event) => {
+            isListening = false;
+            voiceBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">mic</span> Voice';
+            if (event.error === 'not-allowed') alert('Microphone blocked. Allow mic access in browser settings and refresh.');
+        };
+    } else {
+        voiceBtn.style.display = 'none';
+    }
+
+    // Agent status helpers
+    function resetStatuses() {
+        ['status-a', 'status-b', 'status-c', 'status-v'].forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.remove('text-primary', 'text-tertiary', 'agent-active');
+            el.classList.add('text-on-surface-variant');
+            const icon = el.querySelector('span');
+            icon.classList.remove('animate-spin');
+            icon.textContent = 'radio_button_unchecked';
+        });
+    }
+
+    function setStatus(id, state) {
+        const el = document.getElementById(id);
+        const icon = el.querySelector('span');
+        if (state === 'loading') {
+            el.classList.remove('text-on-surface-variant', 'text-tertiary');
+            el.classList.add('text-primary');
+            el.classList.remove('agent-active');
+            void el.offsetWidth;
+            el.classList.add('agent-active');
+            icon.classList.add('animate-spin');
+            icon.textContent = 'progress_activity';
+        } else if (state === 'done') {
+            el.classList.remove('text-primary');
+            el.classList.add('text-tertiary');
+            icon.classList.remove('animate-spin');
+            icon.textContent = 'check_circle';
+        }
+    }
+
+    // Main Analyze
+    const analyzeBtn = document.getElementById('analyze-btn');
+    analyzeBtn.addEventListener('click', async () => {
+        const query = textarea.value.trim();
+        if (!query) { alert('Please describe your symptoms first!'); return; }
+
+        document.getElementById('agent-status').classList.remove('hidden');
+        document.getElementById('symptom-panel')?.classList.add('scan-box');
+        resetStatuses();
+        analyzeBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> Analyzing...';
+        analyzeBtn.disabled = true;
+
+        setTimeout(() => setStatus('status-a', 'loading'), 100);
+        setTimeout(() => setStatus('status-a', 'done'),   2000);
+        setTimeout(() => setStatus('status-b', 'loading'), 2000);
+        setTimeout(() => setStatus('status-b', 'done'),   4000);
+        setTimeout(() => setStatus('status-c', 'loading'), 4000);
+        setTimeout(() => setStatus('status-c', 'done'),   6000);
+        setTimeout(() => setStatus('status-v', 'loading'), 6000);
+
+        try {
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            });
+            const data = await response.json();
+
+            if (data.specialist) {
+                document.getElementById('specialist-name').textContent = data.specialist;
+                document.getElementById('maps-link').href = 'https://www.google.com/maps/search/' + encodeURIComponent(data.specialist + ' near me');
+            }
+
+            setStatus('status-v', 'done');
+
+            document.getElementById('final-response-text').innerHTML =
+                (data.final || "No response received")
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            const risk = data.risk;
+            document.getElementById('risk-label').textContent = risk.label;
+            document.getElementById('risk-label').style.color = risk.color;
+            document.getElementById('risk-bar').style.width = risk.width;
+            document.getElementById('risk-bar').style.backgroundColor = risk.color;
+
+            const researchContainer = document.getElementById('research-container');
+            if (data.papers && data.papers.length > 0) {
+                let html = '';
+                data.papers.forEach((paper, i) => {
+                    if (i > 0) html += '<div class="border-t border-outline-variant/10 my-md"></div>';
+                    html += '<div class="flex items-start gap-md">' +
+                        '<span class="material-symbols-outlined text-on-surface-variant mt-xs">description</span>' +
+                        '<div class="space-y-xs">' +
+                        '<h4 class="text-body-md font-semibold text-on-surface">' + paper.title + '</h4>' +
+                        '<p class="text-caption text-on-surface-variant">' + paper.authors + '</p>' +
+                        '<p class="text-caption text-on-surface-variant">' + paper.summary + '</p>' +
+                        '<a class="text-caption text-primary hover:underline flex items-center gap-xs" href="' + paper.url + '" target="_blank" rel="noopener noreferrer">' +
+                        '<span class="material-symbols-outlined text-[14px]">open_in_new</span>Source: ' + paper.source + '</a>' +
+                        '</div></div>';
+                });
+                researchContainer.innerHTML = html;
+            } else {
+                researchContainer.innerHTML = '<p class="text-caption text-on-surface-variant">No research papers found for this query.</p>';
+            }
+
+            document.getElementById('final-section').scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            console.error(error);
+            document.getElementById('final-response-text').innerHTML = '<span style="color:#ffb4ab">Something went wrong. Please try again.</span>';
+        } finally {
+            analyzeBtn.innerHTML = 'Analyze <span class="material-symbols-outlined text-[18px]">auto_awesome</span>';
+            document.getElementById('symptom-panel')?.classList.remove('scan-box');
+            analyzeBtn.disabled = false;
+        }
+    });
+
+    // Lab Report Upload — single clean handler
+    const labFileInput = document.getElementById('lab-file');
+    const attachLabsBtn = document.getElementById('attach-labs-btn');
+    const attachLabsLabel = document.getElementById('attach-labs-label');
+    const labResult = document.getElementById('lab-result');
+
+    attachLabsBtn.addEventListener('click', () => labFileInput.click());
+
+    labFileInput.addEventListener('change', async function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        attachLabsLabel.textContent = 'Analyzing...';
+        attachLabsBtn.disabled = true;
+        labResult.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 flex items-center gap-sm"><span class="material-symbols-outlined text-primary animate-spin">progress_activity</span><span class="text-body-md text-on-surface-variant">Analyzing ' + file.name + '...</span></div>';
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/upload-lab', { method: 'POST', body: formData });
+            const data = await response.json();
+            if (data.error) {
+                labResult.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10" style="color:#ffb4ab">' + data.error + '</div>';
+            } else {
+                labResult.innerHTML = renderLabAnalysis(data);
+                document.getElementById('lab-report-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        } catch (error) {
+            console.error(error);
+            labResult.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10" style="color:#ffb4ab">Failed to analyze report. Please try again.</div>';
+        } finally {
+            attachLabsLabel.textContent = 'Attach Labs';
+            attachLabsBtn.disabled = false;
+            labFileInput.value = '';
+        }
+    });
+
+    // Lab Report Card Renderer
+    function renderLabAnalysis(data) {
+        const statusColors = { 'High': '#ffb4ab', 'Low': '#adc6ff', 'Critical': '#ff6b6b' };
+        let valuesHTML = '';
+        (data.values || []).forEach(v => {
+            const color = statusColors[v.status] || '#4edea3';
+            valuesHTML += '<div class="flex items-center justify-between py-sm border-b border-outline-variant/10">' +
+                '<div><p class="text-body-md font-semibold text-on-surface">' + v.name + '</p>' +
+                '<p class="text-caption text-on-surface-variant">Normal range: ' + v.range + '</p></div>' +
+                '<div class="text-right"><span class="text-headline-md font-bold" style="color:' + color + '">' + v.result + '</span>' +
+                '<p class="text-caption" style="color:' + color + '">' + v.status + '</p></div></div>';
+        });
+
+        const abnormalCount = data.abnormal_count || 0;
+        const badgeBg = abnormalCount > 0 ? 'rgba(255,180,171,0.15)' : 'rgba(78,222,163,0.15)';
+        const badgeColor = abnormalCount > 0 ? '#ffb4ab' : '#4edea3';
+        const labSpecialist = data.specialist || 'General Physician';
+        const labMapsUrl = 'https://www.google.com/maps/search/' + encodeURIComponent(labSpecialist + ' near me');
+
+        return '<div class="ai-gradient-border p-md md:p-lg space-y-md">' +
+            '<div class="flex items-center justify-between">' +
+            '<h4 class="text-headline-md text-on-surface">Report Summary</h4>' +
+            '<span class="px-sm py-xs rounded-full text-caption font-semibold" style="background:' + badgeBg + ';color:' + badgeColor + '">' + abnormalCount + ' Abnormal ' + (abnormalCount === 1 ? 'Value' : 'Values') + '</span>' +
+            '</div>' +
+            '<p class="text-body-lg text-on-surface">' + (data.summary || '') + '</p>' +
+            ((data.values && data.values.length > 0) ?
+                '<div class="bg-surface-container-low rounded-xl p-md space-y-xs"><h5 class="font-label-md text-on-surface-variant uppercase mb-sm">Flagged Values</h5>' + valuesHTML + '</div>' : '') +
+            '<div class="bg-surface-container-low rounded-xl p-md space-y-xs">' +
+            '<h5 class="font-label-md text-on-surface-variant uppercase">Possible Concerns</h5>' +
+            '<p class="text-body-md text-on-surface-variant">' + (data.concerns || 'No major concerns identified.') + '</p></div>' +
+            '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 space-y-sm">' +
+            '<h4 class="font-label-md text-on-surface-variant uppercase">Recommended Specialist</h4>' +
+            '<div class="text-headline-md text-primary">' + labSpecialist + '</div>' +
+            '<a href="' + labMapsUrl + '" target="_blank" class="text-primary hover:underline flex items-center gap-xs">' +
+            '<span class="material-symbols-outlined text-[16px]">location_on</span>Find Nearby Doctor</a>' +
+            '</div></div>';
+    }
+
+    // Prescription Upload
+    const prescriptionFileInput = document.getElementById('prescription-file');
+    const attachPrescriptionBtn = document.getElementById('attach-prescription-btn');
+    const attachPrescriptionLabel = document.getElementById('attach-prescription-label');
+    const analyzePrescriptionBtn = document.getElementById('analyze-prescription-btn');
+    const prescriptionResult = document.getElementById('prescription-result');
+    let prescriptionFileName = '';
+
+    attachPrescriptionBtn.addEventListener('click', () => prescriptionFileInput.click());
+
+    prescriptionFileInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        prescriptionFileName = file.name;
+        attachPrescriptionLabel.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+        attachPrescriptionLabel.style.color = '#4edea3';
+    });
+
+    analyzePrescriptionBtn.addEventListener('click', async () => {
+        const file = prescriptionFileInput.files[0];
+        if (!file) { alert('Please upload a prescription first.'); return; }
+
+        analyzePrescriptionBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> Analyzing...';
+        analyzePrescriptionBtn.disabled = true;
+        prescriptionResult.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 flex items-center gap-sm"><span class="material-symbols-outlined text-primary animate-spin">progress_activity</span><span class="text-body-md text-on-surface-variant">Reading prescription...</span></div>';
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/upload-prescription', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (data.error) {
+                prescriptionResult.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10" style="color:#ffb4ab">' + data.error + '</div>';
+                return;
+            }
+
+            prescriptionResult.innerHTML = renderPrescription(data.analysis);
+
+        } catch (error) {
+            console.error(error);
+            prescriptionResult.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10" style="color:#ffb4ab">Failed to analyze prescription. Please try again.</div>';
+        } finally {
+            analyzePrescriptionBtn.innerHTML = 'Analyze <span class="material-symbols-outlined text-[18px]">medication</span>';
+            analyzePrescriptionBtn.disabled = false;
+            prescriptionFileInput.value = '';
+            attachPrescriptionLabel.textContent = 'Upload Prescription';
+            attachPrescriptionLabel.style.color = '';
+        }
+    });
+
+    // Prescription Renderer — matches design system
+function formatTiming(timing) {
+
+    if (!timing) return "—";
+
+    if (timing.toUpperCase() === "SOS")
+        return "🚨 As Needed";
+
+    const parts = timing.split("-");
+
+    if (parts.length !== 3)
+        return timing;
+
+    let result = [];
+
+    if (parseInt(parts[0]) > 0) {
+        result.push(
+            parseInt(parts[0]) === 1
+            ? "🌅 Morning"
+            : `🌅 Morning (${parts[0]} tabs)`
+        );
+    }
+
+    if (parseInt(parts[1]) > 0) {
+        result.push(
+            parseInt(parts[1]) === 1
+            ? "☀️ Afternoon"
+            : `☀️ Afternoon (${parts[1]} tabs)`
+        );
+    }
+
+    if (parseInt(parts[2]) > 0) {
+        result.push(
+            parseInt(parts[2]) === 1
+            ? "🌙 Night"
+            : `🌙 Night (${parts[2]} tabs)`
+        );
+    }
+
+    return result.join(" • ");
+}
+    function renderPrescription(analysisText) {
+        const lines = (analysisText || '').split('\n');
+        let medicines = [];
+        let current = null;
+
+        lines.forEach(line => {
+            line = line.trim();
+            if (line.startsWith('MEDICINE:')) {
+                if (current) medicines.push(current);
+                current = { name: line.replace('MEDICINE:', '').trim(), purpose: '', dose: '', timing: '', duration: '', warning: '' };
+            } else if (current) {
+                if (line.startsWith('PURPOSE:')) current.purpose = line.replace('PURPOSE:', '').trim();
+                else if (line.startsWith('DOSE:')) current.dose = line.replace('DOSE:', '').trim();
+                else if (line.startsWith('TIMING:')) current.timing = line.replace('TIMING:', '').trim();
+                else if (line.startsWith('DURATION:')) current.duration = line.replace('DURATION:', '').trim();
+                else if (line.startsWith('WARNING:')) current.warning = line.replace('WARNING:', '').trim();
+            }
+        });
+        if (current) medicines.push(current);
+
+        if (medicines.length === 0) {
+            return '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10"><p class="text-on-surface-variant text-body-md">No medicines could be extracted. Try a clearer image.</p></div>';
+        }
+
+        let html = '<div class="ai-gradient-border p-md md:p-lg space-y-md">' +
+            '<div class="flex items-center justify-between">' +
+            '<h4 class="text-headline-md text-on-surface">Prescription Analysis</h4>' +
+            '<span class="px-sm py-xs rounded-full text-caption font-semibold" style="background:rgba(173,198,255,0.15);color:#adc6ff">' + medicines.length + ' ' + (medicines.length === 1 ? 'Medicine' : 'Medicines') + ' Found</span>' +
+            '</div>';
+        html += `
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+<div class="bg-surface-container-low rounded-xl p-md text-center">
+💊 Medicines: ${medicines.length}
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-md text-center">
+⚠ Risk Alerts: 1
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-md text-center">
+🏥 Health Score: 72
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-md text-center">
+👨‍⚕ Specialist: GP
+</div>
+
+</div>
+`;
+        medicines.forEach(med => {
+
+html += `
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 space-y-sm">
+
+<h5 class="font-headline-md text-primary">${med.name}</h5>
+
+${med.purpose ? `
+<p class="text-body-md text-on-surface-variant">
+<span class="font-semibold text-on-surface">Purpose:</span>
+${med.purpose}
+</p>` : ''}
+
+<div class="grid grid-cols-3 gap-sm mt-sm">
+<div class="bg-surface-container rounded-lg p-sm text-center"> <p class="text-caption">DOSE</p> <p class="font-semibold">${med.dose || '—'}</p> </div> <div class="bg-surface-container rounded-lg p-sm text-center"> <p class="text-caption">TIMING</p> <p class="font-semibold">
+${formatTiming(med.timing)}
+</p></div>
+<div class="bg-surface-container rounded-lg p-sm text-center">
+<p class="text-caption">DURATION</p>
+<p class="font-semibold">${med.duration || '—'}</p>
+</div>
+</div>
+${med.warning ? `
+<div style="
+margin-top:15px;
+padding:12px;
+background:rgba(239,68,68,0.10);
+border:1px solid rgba(239,68,68,0.25);
+border-radius:10px;
+color:#ffb4ab;
+">
+⚠ Possible Side Effects: ${med.warning}
+</div>
+` : ''}
+
+<div class="flex items-center gap-sm flex-wrap mt-sm">
+
+<a
+href="https://www.1mg.com/search/all?name=${encodeURIComponent(med.name)}"
+target="_blank"
+style="
+padding:8px 14px;
+background:#2563eb;
+color:white;
+border-radius:8px;
+text-decoration:none;
+font-weight:600;
+"
+>
+🛒 1mg
+</a>
+
+<a
+href="https://pharmeasy.in/search/all?name=${encodeURIComponent(med.name)}"
+target="_blank"
+style="
+padding:8px 14px;
+background:#16a34a;
+color:white;
+border-radius:8px;
+text-decoration:none;
+font-weight:600;
+"
+>
+🛒 PharmEasy
+</a>
+
+<a
+href="https://www.apollopharmacy.in/search-medicines/${encodeURIComponent(med.name)}"
+target="_blank"
+style="
+padding:8px 14px;
+background:#ea580c;
+color:white;
+border-radius:8px;
+text-decoration:none;
+font-weight:600;
+"
+>
+🛒 Apollo
+</a>
+
+</div>
+</div>
+`;
+
+});
+
+
+        html += `
+<p class="text-caption text-on-surface-variant">
+⚠️ Always take medicines as directed by your doctor.
+</p>
+
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 mt-4">
+<h4>⚠ Drug Interaction Check</h4>
+<p>No major drug interactions detected.</p>
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 mt-4">
+    <h4 class="text-headline-md text-primary">
+        👨‍⚕ Recommended Specialist
+    </h4>
+
+    <p class="text-body-lg font-semibold mt-2">
+        General Physician
+    </p>
+
+    <a
+      href="https://www.google.com/maps/search/General+Physician+near+me"
+      target="_blank"
+      class="inline-block mt-3 px-4 py-2 rounded-lg bg-primary text-black font-semibold"
+    >
+        Find Nearby Doctor
+    </a>
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 mt-4">
+<h4 class="text-headline-md text-primary">
+🧠 Recovery Timeline
+</h4>
+
+<div class="mt-4 space-y-3">
+
+<div>🟢 Day 1-2 → Symptoms improve</div>
+
+<div>🟡 Day 3-5 → Medicines show full effect</div>
+
+<div>🔵 Day 5-7 → Expected recovery</div>
+
+</div>
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 mt-4 text-center">
+
+<h4 class="text-headline-md text-primary">
+🏥 AI Health Score
+</h4>
+
+<div style="
+font-size:72px;
+font-weight:800;
+color:#f59e0b;
+margin-top:10px;
+">
+72
+</div>
+
+<div style="
+width:100%;
+height:20px;
+background:#333;
+border-radius:20px;
+overflow:hidden;
+margin-top:15px;
+">
+<div style="
+width:72%;
+height:100%;
+background:#f59e0b;
+">
+</div>
+</div>
+
+<p class="mt-3 text-lg">
+⚠ Moderate Risk
+</p>
+
+</div>
+
+</div>
+<button
+onclick="downloadReport()"
+class="mt-4 px-4 py-2 rounded-lg bg-green-500 text-black font-bold"
+>
+📄 Download Report
+</button>
+`;
+
+return html;
+}
+function downloadReport() {
+
+    const reportContent =
+        document.getElementById("prescription-result").innerHTML;
+
+    const printWindow = window.open("", "", "width=1000,height=800");
+
+    printWindow.document.write(`
+    <html>
+    <head>
+        <title>DoctoraAI Prescription Report</title>
+        <style>
+            body{
+                font-family: Arial;
+                padding:40px;
+                background:white;
+                color:black;
+            }
+
+            h1,h2,h3,h4,h5{
+                color:black;
+            }
+
+            .bg-surface-container-low,
+            .bg-surface-container{
+                border:1px solid #ddd;
+                padding:15px;
+                margin-bottom:15px;
+                border-radius:10px;
+            }
+
+            button{
+                display:none;
+            }
+
+            a{
+                color:#2563eb;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <h1>DoctoraAI Prescription Report</h1>
+
+        ${reportContent}
+
+    </body>
+    </html>
+    `);
+
+    printWindow.document.close();
+
+    setTimeout(() => {
+        printWindow.print();
+    }, 500);
+}
+</script>
+
+<script>
+setTimeout(function(){ const e=document.getElementById('boot-text'); if(e)e.textContent='Loading Medical Knowledge Base...'; },1000);
+setTimeout(function(){ const e=document.getElementById('boot-text'); if(e)e.textContent='Activating AI Agents...'; },2000);
+setTimeout(function(){ const s=document.getElementById('startup-screen'); if(s){ s.style.opacity='0'; setTimeout(function(){s.remove();},700); } },3200);
+</script>
+
+</body>
+</html>

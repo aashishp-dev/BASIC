@@ -1,269 +1,419 @@
-# 🏥 DoctorAI
+# 🩺 DoctoraAI
 
-### AI-Powered Multi-Agent Healthcare Assistant
+### **AI-Powered Healthcare Intelligence Platform**
 
-DoctorAI is an advanced healthcare intelligence platform that combines Multi-Agent AI, OCR-powered document understanding, and medical decision support to help users better understand symptoms, lab reports, and prescriptions.
+<p align="center">
+  <b>Understand • Organize • Monitor • Improve Your Health</b>
+</p>
 
----
-
-## 🚀 Live Demo
-
-https://doctor-ai-voidmain.vercel.app/
-
----
-
-## 🩺 Problem Statement
-
-Millions of people rely on generic AI chatbots for medical guidance. Traditional systems provide a single response with limited validation and little understanding of medical documents.
-
-DoctorAI introduces a Multi-Agent Healthcare Intelligence System where specialized AI agents collaborate to analyze symptoms, interpret medical reports, decode prescriptions, and provide structured healthcare insights.
+<p align="center">
+  An AI-powered healthcare platform that transforms prescriptions, medical reports, symptoms, and health records into personalized, actionable insights while keeping users in control through human verification.
+</p>
 
 ---
 
-## 🧠 Core Modules
+## 🚀 Vision
 
-### 1️⃣ Symptom Intelligence Engine
+Healthcare should be **intelligent, preventive, accessible, and trustworthy**.
 
-Users can enter symptoms through text or voice.
+DoctoraAI is building an AI Healthcare Intelligence Platform that helps people understand their health, manage medications, track long-term wellness, and make informed decisions alongside qualified healthcare professionals.
 
-AI Agents:
+Our mission is not to replace doctors—it is to make healthcare information easier to understand and manage.
 
-* Diagnosis Agent
-* Treatment Agent
-* Research Agent
-* Validator Agent
+---
 
-Output:
+# 🌍 The Problem
 
+Millions of people struggle with:
+
+* Illegible handwritten prescriptions
+* Complex medical reports
+* Missing medication reminders
+* Drug interaction risks
+* Lost health records
+* No centralized medical history
+* Limited preventive healthcare awareness
+* Difficulty understanding medical terminology
+
+These issues lead to confusion, missed treatments, medication errors, and poor long-term health management.
+
+---
+
+# 💡 Our Solution
+
+DoctoraAI combines Artificial Intelligence, Human Verification, and Health Intelligence into one platform.
+
+Instead of functioning as a simple AI chatbot, DoctoraAI acts as a personal healthcare companion that helps users throughout their healthcare journey.
+
+---
+
+# ✨ Core Features
+
+## 🩺 AI Symptom Assessment
+
+* Intelligent symptom analysis
 * Possible conditions
-* Risk assessment
-* Recommended actions
-* Specialist recommendation
-* Medical research references
+* Severity estimation
+* Differential diagnosis
+* Recommended medical specialist
+* Evidence-based explanations
+* AI confidence score
 
 ---
 
-### 2️⃣ Lab Report Intelligence
+## 💊 Smart Prescription Intelligence
 
-Upload:
+Upload a prescription and let DoctoraAI analyze it.
 
-* PDF Reports
-* PNG Images
-* JPG Images
+### AI automatically extracts:
 
-Capabilities:
-
-* OCR extraction
-* Report summarization
-* Abnormal value detection
-* Health concern identification
-* Specialist recommendation
+* Medicine names
+* Dosage
+* Frequency
+* Duration
+* Route of administration
+* Doctor details
+* Prescription summary
 
 ---
 
-### 3️⃣ Prescription Intelligence
+## ✅ Human-in-the-Loop Verification
 
-Upload prescriptions and receive:
+Healthcare requires accuracy.
 
-* Medicine identification
-* Purpose of medicine
-* Dosage extraction
-* Timing interpretation
-* Duration detection
-* Side-effect warnings
-* Drug interaction awareness
-* AI Health Score
-* Recovery timeline
-* Downloadable report
+Instead of forcing users to trust AI blindly, DoctoraAI verifies confidence before processing.
 
----
+### High Confidence
 
-## 🔄 Multi-Agent Architecture
+✔ Prescription processed automatically.
 
-User Query
+### Low Confidence
 
-↓
+Users can:
 
-Diagnosis Agent
+* Edit medicine names
+* Correct dosage
+* Change timing
+* Add missing medicines
+* Remove incorrect medicines
+* Save a verified prescription
 
-↓
-
-Treatment Agent
-
-↓
-
-Research Agent
-
-↓
-
-Validator Agent
-
-↓
-
-Final Verified Response
+The verified prescription becomes the trusted source for all future features.
 
 ---
 
-## ✨ Features
+## ➕ Manual Medicine Entry
 
-### 🧠 Multi-Agent Medical Reasoning
+Users can manually add medicines whenever needed.
 
-Independent AI agents analyze symptoms before validation.
+Fields include:
 
-### 📊 Dynamic Risk Assessment
+* Medicine Name
+* Generic Name
+* Brand Name
+* Strength
+* Dosage
+* Morning
+* Afternoon
+* Evening
+* Night
+* Before Food
+* After Food
+* Duration
+* Instructions
+* Notes
 
-* Low Risk
-* Moderate Risk
-* High Risk
+---
 
-### 📚 Research-Based Insights
+## 🔍 Smart Medicine Search
 
-Relevant PubMed references generated dynamically.
+Instead of typing everything manually:
 
-### 🎤 Voice Symptom Input
+* Auto-complete medicine names
+* Brand suggestions
+* Generic medicine suggestions
+* Spelling correction
 
-Browser speech recognition support.
+---
 
-### 🩺 Lab Report Understanding
+## 🤖 Medicine Intelligence
 
-AI-assisted report interpretation.
+Every medicine includes:
 
-### 💊 Prescription Intelligence
+* Purpose
+* Usage instructions
+* Side effects
+* Drug interactions
+* Food interactions
+* Alcohol warnings
+* Pregnancy warnings
+* Storage instructions
+* Missed dose guidance
 
-Medicine understanding and recovery planning.
+---
 
-### ⚠ Drug Interaction Awareness
+## ⚠ Drug Interaction Checker
 
-Flags potential medication concerns.
+Automatically detects:
 
-### 👨‍⚕ Specialist Recommendation
+* Drug–drug interactions
+* Duplicate medicines
+* Allergy conflicts
+* Contraindications
+* High-risk combinations
 
-Suggests:
+---
 
-* Neurologist
-* Cardiologist
-* Dermatologist
-* Pulmonologist
-* Orthopedic
-* Gastroenterologist
-* Psychiatrist
+## ⏰ Smart Medication Reminder
+
+Never miss a medicine again.
+
+Features:
+
+* Personalized reminders
+* Meal timing reminders
+* Water reminders
+* Missed dose alerts
+* Refill reminders
+* Medicine expiry reminders
+* Medication adherence tracking
+
+---
+
+## 📄 AI Medical Report Analyzer
+
+Supports:
+
+* CBC
+* Blood Sugar
+* Lipid Profile
+* Liver Function Test
+* Kidney Function Test
+* Thyroid Reports
+* Vitamin Reports
+* MRI
+* CT Scan
+* X-Ray
+* Health Checkup Reports
+
+AI explains reports in simple language and highlights important findings.
+
+---
+
+## 📊 Health Timeline
+
+Visualize your complete medical history.
+
+Track:
+
+* Blood Pressure
+* Blood Sugar
+* Cholesterol
+* BMI
+* Weight
+* Prescriptions
+* Reports
+* Diagnoses
+* Consultations
+
+---
+
+## ❤️ AI Health Twin *(Planned)*
+
+A continuously evolving digital health profile that learns from:
+
+* Medical history
+* Reports
+* Prescriptions
+* Lifestyle
+* Symptoms
+* Health trends
+
+This enables increasingly personalized healthcare insights.
+
+---
+
+## 🔮 Health Risk Prediction *(Planned)*
+
+Predict potential future risks, including:
+
+* Diabetes
+* Hypertension
+* Heart Disease
+* Kidney Disease
+* Fatty Liver
+* Obesity
+
+The platform provides preventive recommendations based on health trends.
+
+---
+
+## 🧠 Preventive Health Coach *(Planned)*
+
+Receive AI-powered recommendations on:
+
+* Nutrition
+* Exercise
+* Hydration
+* Sleep
+* Stress management
+* Healthy habits
+
+---
+
+## 📔 AI Health Journal *(Planned)*
+
+Track daily:
+
+* Sleep
+* Mood
+* Exercise
+* Water intake
+* Pain level
+* Symptoms
+
+AI identifies long-term patterns and wellness trends.
+
+---
+
+## 🚨 Emergency Health Summary
+
+Generate a one-tap emergency profile containing:
+
+* Blood Group
+* Allergies
+* Current Medicines
+* Chronic Diseases
+* Emergency Contacts
+* Recent Prescriptions
+
+Designed for quick access during emergencies.
+
+---
+
+## 👨‍👩‍👧 Family Health Dashboard *(Planned)*
+
+Manage healthcare for:
+
+* Parents
+* Children
+* Spouse
+
+Each family member has a secure, separate medical profile.
+
+---
+
+## 👨‍⚕ Doctor Visit Preparation
+
+Before every consultation, DoctoraAI creates:
+
+* Symptom summary
+* Current medicines
+* Recent reports
+* Medical history
+* Suggested questions for the doctor
+
+---
+
+## 🧠 Multi-Agent Medical Consensus Engine *(Future Vision)*
+
+Instead of relying on a single AI model, multiple specialist AI agents independently analyze the same case.
+
+Example agents:
+
 * General Physician
+* Cardiologist
+* Neurologist
+* Pharmacologist
+* Radiologist
 
-### 📍 Nearby Doctor Finder
-
-Google Maps integration for specialist discovery.
-
-### 📄 Downloadable Medical Report
-
-Generate printable prescription summaries.
+A Validator AI compares all analyses, resolves disagreements, calculates confidence, and generates a transparent recommendation.
 
 ---
 
-## 🛠 Tech Stack
+# 🛡 Privacy & Security
+
+* Secure authentication
+* Encrypted medical records
+* User-controlled data sharing
+* Transparent AI responses
+* Human verification for uncertain outputs
+
+---
+
+# 🏗 Tech Stack
 
 ### Frontend
 
-* HTML5
+* Next.js
+* React
+* TypeScript
 * Tailwind CSS
-* Vanilla JavaScript
 
 ### Backend
 
+* FastAPI
 * Python
-* Flask
 
-### AI Layer
+### AI
 
-* Groq API
-* Llama 3.3 70B Versatile
+* Gemini API
+* OCR
+* Medical NLP
+* Multi-Agent AI Architecture
 
-### OCR & Document Processing
+### Database
 
-* PyMuPDF
-* Tesseract OCR
-* Pillow
+* PostgreSQL / MongoDB
 
-### Research Sources
+### Authentication
 
-* PubMed
-
-### Deployment
-
-* Vercel
+* Clerk / Firebase Authentication
 
 ---
 
-## 📂 Project Structure
+# 🎯 Roadmap
 
-DoctoraAI
+### Phase 1
 
-├── app.py
+* AI Symptom Assessment
+* Prescription Intelligence
+* Human Verification
+* Medicine Reminders
+* Drug Interaction Checker
+* Medical Report Analyzer
+* Health Timeline
 
-├── agents.py
+### Phase 2
 
-├── requirements.txt
+* AI Health Twin
+* Preventive Health Coach
+* Health Journal
+* Emergency Health Summary
+* Family Dashboard
 
-├── vercel.json
+### Phase 3
 
-│
-
-└── templates
-
-  └── index.html
-
----
-
-## 🎯 Key Innovations
-
-✅ Multi-Agent Reasoning
-
-✅ AI Validation Layer
-
-✅ Medical Research Integration
-
-✅ OCR-Powered Document Understanding
-
-✅ Prescription Intelligence
-
-✅ Health Score Generation
-
-✅ Recovery Timeline Prediction
-
-✅ Specialist Recommendation
-
-✅ Voice-Based Symptom Input
-
-✅ Downloadable Medical Reports
+* Multi-Agent Medical Consensus Engine
+* Doctor Portal
+* Hospital Dashboard
+* Wearable Integration
+* Insurance Integration
+* Voice Assistant
+* Telemedicine
 
 ---
 
-## ⚠ Disclaimer
+# ⚠ Disclaimer
 
-DoctoraAI is intended for informational and educational purposes only.
+DoctoraAI is an AI-assisted healthcare platform intended to help users understand and organize medical information.
 
-It does not provide medical diagnoses and should not replace consultation with licensed healthcare professionals.
-
-Always seek professional medical advice for healthcare decisions.
+It is **not a replacement for licensed healthcare professionals** and should not be used as the sole basis for diagnosis or treatment decisions. Always consult a qualified medical practitioner for professional medical advice.
 
 ---
 
-## 👨‍💻 Team Void main
+# ❤️ Our Mission
 
-### Team Leader
+**Making healthcare understandable, organized, and accessible through responsible Artificial Intelligence.**
 
-* Aashish Pandey
-
-### Team Members
-
-* Mayank Karnatak
-* Tanishk Singh
-* Parth Garg
-
-## 📜 Copyright & License
-
-Copyright © 2026 Team Void main.
-
-All Rights Reserved.
-
-This project is proprietary. No permission is granted to use, copy, modify, or distribute any part of this software without written authorization from the authors.
-# BASIC
+If this project inspires you, consider giving it a ⭐ and contributing to the future of intelligent healthcare.
