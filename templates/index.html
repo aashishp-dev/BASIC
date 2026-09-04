@@ -13,6 +13,27 @@
 </style>
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>DoctoraAI Dashboard</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script>
+  // Initialize Firebase (only if config is provided)
+  const firebaseConfig = {
+    apiKey: "{{ FIREBASE_API_KEY }}",
+    authDomain: "{{ FIREBASE_AUTH_DOMAIN }}",
+    projectId: "{{ FIREBASE_PROJECT_ID }}",
+    storageBucket: "{{ FIREBASE_STORAGE_BUCKET }}",
+    messagingSenderId: "{{ FIREBASE_MESSAGING_SENDER_ID }}",
+    appId: "{{ FIREBASE_APP_ID }}"
+  };
+
+  // Only initialize if API key exists
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "") {
+    firebase.initializeApp(firebaseConfig);
+  }
+</script>
+
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
@@ -165,10 +186,108 @@
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 flex items-center justify-between px-margin-mobile md:px-gutter h-16">
     <div class="flex items-center gap-base">
+        <!-- NEW: Hamburger Menu -->
+        <button id="hamburger-btn" onclick="toggleProfilePanel()" class="text-on-surface hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-[28px]">menu</span>
+        </button>
+
         <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'opsz' 32;">clinical_notes</span>
         <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">DoctoraAI</h1>
     </div>
 </header>
+
+<!-- Profile Panel Overlay -->
+<div id="profile-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden" onclick="closeProfilePanel()"></div>
+
+<!-- Profile Panel -->
+<div id="profile-panel" class="fixed top-0 left-0 h-full w-80 bg-surface glass-panel border-r border-outline-variant transform -translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+
+    <!-- Not Logged In View -->
+    <div id="login-view" class="p-lg space-y-md">
+        <h2 class="font-headline-lg text-headline-md text-primary">Welcome</h2>
+        <p class="text-body-md text-on-surface-variant">Sign in to access your health profile and timeline.</p>
+        <button id="google-signin-btn" class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md px-md py-md rounded-xl transition-all flex items-center justify-center gap-sm">
+            <span class="material-symbols-outlined">login</span>
+            Sign in with Google
+        </button>
+    </div>
+
+    <!-- Logged In View (hidden) -->
+    <div id="profile-view" class="hidden p-lg space-y-md">
+        <!-- User Info Card -->
+        <div class="flex items-center gap-sm">
+            <img id="user-photo" class="w-12 h-12 rounded-full" src="" alt="Profile">
+            <div>
+                <p id="user-name" class="font-headline-md text-on-surface">-</p>
+                <p id="user-email" class="text-caption text-on-surface-variant">-</p>
+            </div>
+        </div>
+
+        <!-- Quick Metrics -->
+        <div class="grid grid-cols-2 gap-sm">
+            <div class="bg-surface-container-low rounded-lg p-sm">
+                <p class="text-caption text-on-surface-variant">Weight</p>
+                <p id="metric-weight" class="font-semibold text-on-surface">--</p>
+            </div>
+            <div class="bg-surface-container-low rounded-lg p-sm">
+                <p class="text-caption text-on-surface-variant">BP</p>
+                <p id="metric-bp" class="font-semibold text-on-surface">--</p>
+            </div>
+            <div class="bg-surface-container-low rounded-lg p-sm col-span-2">
+                <p class="text-caption text-on-surface-variant">Blood Sugar</p>
+                <p id="metric-sugar" class="font-semibold text-on-surface">--</p>
+            </div>
+        </div>
+
+        <button onclick="showAddMetricsModal()" class="w-full bg-tertiary text-on-tertiary font-label-md px-md py-sm rounded-xl">
+            Add Metrics
+        </button>
+
+        <!-- Health Timeline -->
+        <div>
+            <h3 class="font-headline-md text-on-surface mb-sm">Health Timeline</h3>
+            <div id="timeline-container" class="space-y-sm">
+                <p class="text-caption text-on-surface-variant">No timeline entries yet.</p>
+            </div>
+        </div>
+
+        <button id="logout-btn" class="w-full text-error font-label-md px-md py-sm rounded-xl border border-error hover:bg-error/10 transition-all">
+            Logout
+        </button>
+    </div>
+</div>
+
+<!-- Add Metrics Modal -->
+<div id="metrics-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center" onclick="if(event.target === this) closeMetricsModal()">
+    <div class="glass-panel rounded-xl p-lg max-w-md w-full mx-sm space-y-sm" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between">
+            <h3 class="font-headline-md text-primary">Add Health Metrics</h3>
+            <button onclick="closeMetricsModal()" class="text-on-surface-variant hover:text-error transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div>
+            <label class="text-caption text-on-surface-variant uppercase block mb-xs">Weight (kg)</label>
+            <input id="input-weight" type="text" placeholder="70" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-primary/30">
+        </div>
+
+        <div>
+            <label class="text-caption text-on-surface-variant uppercase block mb-xs">Blood Pressure</label>
+            <input id="input-bp" type="text" placeholder="120/80" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-primary/30">
+        </div>
+
+        <div>
+            <label class="text-caption text-on-surface-variant uppercase block mb-xs">Blood Sugar (mg/dL)</label>
+            <input id="input-sugar" type="text" placeholder="95" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-primary/30">
+        </div>
+
+        <div class="flex gap-sm">
+            <button onclick="saveMetrics()" class="flex-1 bg-tertiary text-on-tertiary font-label-md px-md py-sm rounded-xl hover:bg-tertiary-container transition-all active:scale-95">Save</button>
+            <button onclick="closeMetricsModal()" class="flex-1 text-on-surface-variant border border-outline-variant rounded-xl hover:bg-surface-container transition-all">Cancel</button>
+        </div>
+    </div>
+</div>
 
 <main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 space-y-lg">
 
@@ -314,6 +433,93 @@
                 Upload a prescription to get started.
             </p>
         </div>
+    </section>
+
+    <!-- Manual Medicine Entry -->
+    <section class="space-y-md mt-lg">
+        <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-tertiary">medication_liquid</span>
+            <h3 class="font-headline-md text-on-surface">My Medicine Cabinet</h3>
+        </div>
+
+        <!-- Collapsed Add Button -->
+        <div id="add-medicine-collapsed" class="glass-panel rounded-xl p-md cursor-pointer hover:ring-2 ring-tertiary/30 transition-all" onclick="toggleManualForm()">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-sm">
+                    <span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                    <span class="text-body-md text-on-surface font-medium">Add Medicine Manually</span>
+                </div>
+                <span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+            </div>
+        </div>
+
+        <!-- Expandable Form (hidden by default) -->
+        <div id="manual-medicine-form" class="hidden glass-panel rounded-xl p-md space-y-sm">
+            <div class="flex items-center justify-between mb-sm">
+                <h4 class="font-label-md text-primary uppercase">New Medicine</h4>
+                <button onclick="toggleManualForm()" class="text-on-surface-variant hover:text-error transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="space-y-sm">
+                <div>
+                    <label class="text-caption text-on-surface-variant uppercase block mb-xs">Medicine Name *</label>
+                    <input id="manual-med-name" type="text" placeholder="e.g. Paracetamol 500mg" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                </div>
+
+                <div>
+                    <label class="text-caption text-on-surface-variant uppercase block mb-xs">Purpose (Optional)</label>
+                    <input id="manual-med-purpose" type="text" placeholder="e.g. Fever and pain relief" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                </div>
+
+                <div class="grid grid-cols-2 gap-sm">
+                    <div>
+                        <label class="text-caption text-on-surface-variant uppercase block mb-xs">Dose (Optional)</label>
+                        <input id="manual-med-dose" type="text" placeholder="e.g. 500mg" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                    </div>
+                    <div>
+                        <label class="text-caption text-on-surface-variant uppercase block mb-xs">Duration (Optional)</label>
+                        <input id="manual-med-duration" type="text" placeholder="e.g. 5 days" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-caption text-on-surface-variant uppercase block mb-xs">Timing (Optional)</label>
+                    <div class="grid grid-cols-3 gap-sm">
+                        <div>
+                            <label class="text-caption text-on-surface-variant block mb-xs">🌅 Morning</label>
+                            <input id="manual-med-morning" type="number" min="0" max="10" value="0" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                        </div>
+                        <div>
+                            <label class="text-caption text-on-surface-variant block mb-xs">☀️ Afternoon</label>
+                            <input id="manual-med-afternoon" type="number" min="0" max="10" value="0" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                        </div>
+                        <div>
+                            <label class="text-caption text-on-surface-variant block mb-xs">🌙 Night</label>
+                            <input id="manual-med-night" type="number" min="0" max="10" value="0" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-caption text-on-surface-variant uppercase block mb-xs">Warning/Notes (Optional)</label>
+                    <textarea id="manual-med-warning" rows="2" placeholder="e.g. Take after meals, avoid alcohol" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg px-sm py-sm text-body-md text-on-surface focus:ring-2 ring-tertiary/30 focus:border-tertiary transition-all resize-none"></textarea>
+                </div>
+
+                <div class="flex items-center gap-sm pt-sm">
+                    <button onclick="saveManualMedicine()" class="bg-tertiary hover:bg-tertiary-container text-on-tertiary font-label-md px-md py-sm rounded-xl transition-all flex items-center gap-sm active:scale-95 shadow-lg shadow-tertiary/20">
+                        💊 Save Medicine
+                    </button>
+                    <button onclick="clearManualForm()" class="text-on-surface-variant hover:text-on-surface font-label-md px-md py-sm rounded-xl transition-all">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medicine List -->
+        <div id="manual-medicines-list"></div>
     </section>
 
     <!-- Disclaimer -->
@@ -533,6 +739,16 @@
             } else {
                 labResult.innerHTML = renderLabAnalysis(data);
                 document.getElementById('lab-report-section').scrollIntoView({ behavior: 'smooth' });
+
+                // Auto-save to timeline if logged in
+                if (userToken) {
+                    await saveTimelineEntry('lab_report', 'Lab Report Uploaded', {
+                        summary: data.summary,
+                        abnormal_count: data.abnormal_count,
+                        specialist: data.specialist,
+                        urgency: data.urgency
+                    });
+                }
             }
         } catch (error) {
             console.error(error);
@@ -621,6 +837,16 @@
             }
 
             prescriptionResult.innerHTML = renderPrescription(data.analysis);
+
+            // Auto-save to timeline if logged in
+            if (userToken) {
+                // Count medicines from the analysis text
+                const medicineCount = (data.analysis.match(/MEDICINE:/g) || []).length;
+                await saveTimelineEntry('prescription', `Prescription Analyzed - ${medicineCount} Medicine(s)`, {
+                    medicine_count: medicineCount,
+                    file_name: file.name
+                });
+            }
 
         } catch (error) {
             console.error(error);
@@ -963,12 +1189,387 @@ function downloadReport() {
         printWindow.print();
     }, 500);
 }
+
+// ========================================
+// MANUAL MEDICINE ENTRY - localStorage Functions
+// ========================================
+
+function loadMedicines() {
+    const stored = localStorage.getItem('doctoraai_medicines');
+    return stored ? JSON.parse(stored) : [];
+}
+
+function saveMedicines(medicines) {
+    localStorage.setItem('doctoraai_medicines', JSON.stringify(medicines));
+}
+
+function toggleManualForm() {
+    const form = document.getElementById('manual-medicine-form');
+    const collapsed = document.getElementById('add-medicine-collapsed');
+
+    if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        collapsed.classList.add('hidden');
+        document.getElementById('manual-med-name').focus();
+    } else {
+        form.classList.add('hidden');
+        collapsed.classList.remove('hidden');
+    }
+}
+
+function clearManualForm() {
+    document.getElementById('manual-med-name').value = '';
+    document.getElementById('manual-med-purpose').value = '';
+    document.getElementById('manual-med-dose').value = '';
+    document.getElementById('manual-med-morning').value = '0';
+    document.getElementById('manual-med-afternoon').value = '0';
+    document.getElementById('manual-med-night').value = '0';
+    document.getElementById('manual-med-duration').value = '';
+    document.getElementById('manual-med-warning').value = '';
+    toggleManualForm();
+}
+
+function saveManualMedicine() {
+    const name = document.getElementById('manual-med-name').value.trim();
+
+    if (!name) {
+        alert('Please enter a medicine name');
+        document.getElementById('manual-med-name').focus();
+        return;
+    }
+
+    const morning = document.getElementById('manual-med-morning').value || '0';
+    const afternoon = document.getElementById('manual-med-afternoon').value || '0';
+    const night = document.getElementById('manual-med-night').value || '0';
+    const timing = `${morning}-${afternoon}-${night}`;
+
+    const medicine = {
+        id: 'med_' + Date.now(),
+        name: name,
+        purpose: document.getElementById('manual-med-purpose').value.trim(),
+        dose: document.getElementById('manual-med-dose').value.trim(),
+        timing: timing,
+        duration: document.getElementById('manual-med-duration').value.trim(),
+        warning: document.getElementById('manual-med-warning').value.trim(),
+        addedAt: Date.now()
+    };
+
+    const medicines = loadMedicines();
+    medicines.unshift(medicine);
+    saveMedicines(medicines);
+
+    clearManualForm();
+    renderManualMedicines();
+
+    // Auto-save to timeline if logged in
+    if (userToken) {
+        saveTimelineEntry('medicine', `Added ${medicine.name}`, medicine);
+    }
+
+    setTimeout(() => {
+        document.getElementById('manual-medicines-list').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+}
+
+function deleteMedicine(id) {
+    if (!confirm('Are you sure you want to delete this medicine?')) {
+        return;
+    }
+
+    let medicines = loadMedicines();
+    medicines = medicines.filter(med => med.id !== id);
+    saveMedicines(medicines);
+    renderManualMedicines();
+}
+
+function renderManualMedicines() {
+    const medicines = loadMedicines();
+    const container = document.getElementById('manual-medicines-list');
+
+    if (medicines.length === 0) {
+        container.innerHTML = '<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/10 text-center">' +
+            '<p class="text-body-md text-on-surface-variant">💊 No medicines added yet.</p>' +
+            '<p class="text-caption text-on-surface-variant mt-xs">Click "Add Medicine Manually" above to add your first medicine.</p>' +
+            '</div>';
+        return;
+    }
+
+    let html = '<div class="space-y-md">';
+
+    medicines.forEach(med => {
+        html += '<div class="ai-gradient-border p-md md:p-lg space-y-sm" style="position: relative;">';
+        html += '<div class="flex items-start justify-between">';
+        html += '<h5 class="font-headline-md text-tertiary">' + med.name + '</h5>';
+        html += '<button onclick="deleteMedicine(\'' + med.id + '\')" class="text-on-surface-variant hover:text-error transition-colors" title="Delete medicine">';
+        html += '<span class="material-symbols-outlined text-[20px]">delete</span>';
+        html += '</button>';
+        html += '</div>';
+
+        if (med.purpose) {
+            html += '<p class="text-body-md text-on-surface-variant">';
+            html += '<span class="font-semibold text-on-surface">Purpose:</span> ' + med.purpose;
+            html += '</p>';
+        }
+
+        html += '<div class="grid grid-cols-3 gap-sm mt-sm">';
+        html += '<div class="bg-surface-container rounded-lg p-sm text-center">';
+        html += '<p class="text-caption text-on-surface-variant">DOSE</p>';
+        html += '<p class="font-semibold text-on-surface">' + (med.dose || '—') + '</p>';
+        html += '</div>';
+        html += '<div class="bg-surface-container rounded-lg p-sm text-center">';
+        html += '<p class="text-caption text-on-surface-variant">TIMING</p>';
+        html += '<p class="font-semibold text-on-surface text-sm">' + formatTiming(med.timing) + '</p>';
+        html += '</div>';
+        html += '<div class="bg-surface-container rounded-lg p-sm text-center">';
+        html += '<p class="text-caption text-on-surface-variant">DURATION</p>';
+        html += '<p class="font-semibold text-on-surface">' + (med.duration || '—') + '</p>';
+        html += '</div>';
+        html += '</div>';
+
+        if (med.warning) {
+            html += '<div style="margin-top:15px;padding:12px;background:rgba(239,68,68,0.10);border:1px solid rgba(239,68,68,0.25);border-radius:10px;color:#ffb4ab;">';
+            html += '⚠ ' + med.warning;
+            html += '</div>';
+        }
+
+        html += '<div class="flex items-center gap-sm flex-wrap mt-sm">';
+        html += '<a href="https://www.1mg.com/search/all?name=' + encodeURIComponent(med.name) + '" target="_blank" style="padding:8px 14px;background:#2563eb;color:white;border-radius:8px;text-decoration:none;font-weight:600;">🛒 1mg</a>';
+        html += '<a href="https://pharmeasy.in/search/all?name=' + encodeURIComponent(med.name) + '" target="_blank" style="padding:8px 14px;background:#16a34a;color:white;border-radius:8px;text-decoration:none;font-weight:600;">🛒 PharmEasy</a>';
+        html += '<a href="https://www.apollopharmacy.in/search-medicines/' + encodeURIComponent(med.name) + '" target="_blank" style="padding:8px 14px;background:#ea580c;color:white;border-radius:8px;text-decoration:none;font-weight:600;">🛒 Apollo</a>';
+        html += '</div>';
+
+        html += '</div>';
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ========================================
+// GOOGLE AUTH & PROFILE/TIMELINE - JS
+// ========================================
+
+let currentUser = null;
+let userToken = null;
+
+function toggleProfilePanel() {
+    const panel = document.getElementById('profile-panel');
+    const overlay = document.getElementById('profile-overlay');
+    const isOpen = !panel.classList.contains('-translate-x-full');
+
+    if (isOpen) {
+        closeProfilePanel();
+    } else {
+        panel.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    }
+}
+
+function closeProfilePanel() {
+    document.getElementById('profile-panel').classList.add('-translate-x-full');
+    document.getElementById('profile-overlay').classList.add('hidden');
+}
+
+// Initialize Auth listener (only if Firebase is configured)
+if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+    firebase.auth().onAuthStateChanged(async (user) => {
+        if (user) {
+            currentUser = user;
+            userToken = await user.getIdToken();
+
+            // Verify token with backend
+            const response = await fetch('/verify-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: userToken })
+            });
+
+            if (response.ok) {
+                showProfileView(user);
+                await loadUserData();
+            }
+        } else {
+            currentUser = null;
+            userToken = null;
+            showLoginView();
+        }
+    });
+
+    // Google Sign In
+    document.getElementById('google-signin-btn').addEventListener('click', async () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            await firebase.auth().signInWithPopup(provider);
+        } catch (error) {
+            alert('Login failed: ' + error.message);
+        }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        await firebase.auth().signOut();
+    });
+} else {
+    console.log('Firebase not configured - auth features disabled');
+}
+
+function showLoginView() {
+    document.getElementById('login-view').classList.remove('hidden');
+    document.getElementById('profile-view').classList.add('hidden');
+}
+
+function showProfileView(user) {
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('profile-view').classList.remove('hidden');
+
+    document.getElementById('user-name').textContent = user.displayName;
+    document.getElementById('user-email').textContent = user.email;
+    document.getElementById('user-photo').src = user.photoURL;
+}
+
+// Data loading and timeline
+async function loadUserData() {
+    if (!userToken) return;
+
+    // Load metrics
+    const metricsRes = await fetch('/get-metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: userToken })
+    });
+    if (metricsRes.ok) {
+        const metrics = await metricsRes.json();
+        document.getElementById('metric-weight').textContent = metrics.weight?.value || '--';
+        document.getElementById('metric-bp').textContent = metrics.bloodPressure?.value || '--';
+        document.getElementById('metric-sugar').textContent = metrics.bloodSugar?.value || '--';
+    }
+
+    // Load timeline
+    const timelineRes = await fetch('/get-timeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: userToken })
+    });
+    if (timelineRes.ok) {
+        const timeline = await timelineRes.json();
+        renderTimeline(timeline);
+    }
+}
+
+function renderTimeline(entries) {
+    const container = document.getElementById('timeline-container');
+
+    if (entries.length === 0) {
+        container.innerHTML = '<p class="text-caption text-on-surface-variant">No timeline entries yet.</p>';
+        return;
+    }
+
+    let html = '';
+    entries.forEach(entry => {
+        const date = new Date(entry.date).toLocaleDateString();
+        html += `<div class="bg-surface-container-low rounded-lg p-sm border-l-4 border-${getTypeColor(entry.type)}">`;
+        html += `<p class="font-semibold text-on-surface">${entry.title}</p>`;
+        html += `<p class="text-caption text-on-surface-variant">${date} • ${entry.type}</p>`;
+        html += `</div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function getTypeColor(type) {
+    const colors = {
+        'lab_report': 'primary',
+        'prescription': 'secondary',
+        'medicine': 'tertiary',
+        'doctor_visit': 'error',
+        'metric': 'outline'
+    };
+    return colors[type] || 'outline-variant';
+}
+
+function showAddMetricsModal() {
+    // Check if user is logged in
+    if (!userToken) {
+        alert('Please sign in with Google to track health metrics');
+        return;
+    }
+    document.getElementById('metrics-modal').classList.remove('hidden');
+}
+
+function closeMetricsModal() {
+    document.getElementById('metrics-modal').classList.add('hidden');
+}
+
+async function saveMetrics() {
+    const weight = document.getElementById('input-weight').value.trim();
+    const bp = document.getElementById('input-bp').value.trim();
+    const sugar = document.getElementById('input-sugar').value.trim();
+
+    if (!weight && !bp && !sugar) {
+        alert('Please enter at least one metric');
+        return;
+    }
+
+    // Check if user is logged in
+    if (!userToken) {
+        alert('Please sign in with Google to save health metrics to the cloud');
+        return;
+    }
+
+    try {
+        const response = await fetch('/save-metrics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                token: userToken,
+                weight: weight ? weight + 'kg' : null,
+                bloodPressure: bp,
+                bloodSugar: sugar ? sugar + ' mg/dL' : null
+            })
+        });
+
+        if (response.ok) {
+            closeMetricsModal();
+            document.getElementById('input-weight').value = '';
+            document.getElementById('input-bp').value = '';
+            document.getElementById('input-sugar').value = '';
+            await loadUserData();
+            alert('Metrics saved successfully!');
+        } else {
+            const error = await response.json();
+            alert('Failed to save metrics: ' + (error.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error saving metrics:', error);
+        alert('Failed to save metrics. Please try again.');
+    }
+}
+
+// Sync helper (optional, can be called after AI actions)
+async function saveTimelineEntry(type, title, data) {
+    if (!userToken) return;
+
+    await fetch('/save-timeline-entry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            token: userToken,
+            type: type,
+            title: title,
+            date: Date.now(),
+            data: data
+        })
+    });
+    loadUserData();
+}
+
 </script>
 
 <script>
 setTimeout(function(){ const e=document.getElementById('boot-text'); if(e)e.textContent='Loading Medical Knowledge Base...'; },1000);
 setTimeout(function(){ const e=document.getElementById('boot-text'); if(e)e.textContent='Activating AI Agents...'; },2000);
 setTimeout(function(){ const s=document.getElementById('startup-screen'); if(s){ s.style.opacity='0'; setTimeout(function(){s.remove();},700); } },3200);
+setTimeout(function(){ renderManualMedicines(); }, 3300); // Initialize after startup
 </script>
 
 </body>
