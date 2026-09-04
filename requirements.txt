@@ -4,3 +4,4 @@ python-dotenv
 gunicorn
 PyMuPDF
 Pillow
+firebase-admin
