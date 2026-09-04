@@ -12,7 +12,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
-![AI](https://img.shields.io/badge/AI-Gemini-orange)
+![AI](https://img.shields.io/badge/AI-Groq-orange)
 
 </div>
 
