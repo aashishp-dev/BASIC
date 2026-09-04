@@ -1,10 +1,11 @@
-from flask import Flask, send_from_directory, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify, render_template
 import os
 import base64
 import io
 from PIL import Image
 from groq import Groq
-import fitz
+import pymupdf
+from functools import wraps
 
 from agents import (
     run_doctoraai,
@@ -15,8 +16,59 @@ from agents import (
     parse_lab_analysis
 )
 
+# Initialize Firebase Admin SDK
+try:
+    import firebase_admin
+    from firebase_admin import credentials, firestore, auth as firebase_auth
+    import json
+
+    # Use environment variables for Firebase credentials (more secure)
+    firebase_creds = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
+
+    if firebase_creds:
+        # Parse JSON from environment variable
+        cred_dict = json.loads(firebase_creds)
+        cred = credentials.Certificate(cred_dict)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        FIREBASE_ENABLED = True
+        print("✓ Firebase initialized successfully")
+    else:
+        FIREBASE_ENABLED = False
+        db = None
+        print("WARNING: FIREBASE_SERVICE_ACCOUNT not found in environment. Auth features disabled.")
+except ImportError:
+    FIREBASE_ENABLED = False
+    db = None
+    print("WARNING: firebase-admin not installed. Auth features disabled.")
+except Exception as e:
+    FIREBASE_ENABLED = False
+    db = None
+    print(f"WARNING: Firebase initialization failed: {str(e)}")
+
 app = Flask(__name__)
 groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+
+# Auth decorator
+def require_auth(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not FIREBASE_ENABLED:
+            return jsonify({'error': 'Firebase not configured'}), 503
+
+        token = request.json.get('token')
+        if not token:
+            return jsonify({'error': 'No token provided'}), 401
+
+        try:
+            decoded = firebase_auth.verify_id_token(token)
+            request.userId = decoded['uid']
+            return f(*args, **kwargs)
+        except Exception as e:
+            return jsonify({'error': 'Invalid token', 'detail': str(e)}), 401
+
+    return decorated_function
 
 
 def ocr_image_with_groq(file):
@@ -55,7 +107,7 @@ def ocr_image_with_groq(file):
 def extract_text(file):
     filename = file.filename.lower()
     if filename.endswith(".pdf"):
-        pdf = fitz.open(stream=file.read(), filetype="pdf")
+        pdf = pymupdf.open(stream=file.read(), filetype="pdf")
         return "".join(page.get_text() for page in pdf)
     elif filename.endswith((".png", ".jpg", ".jpeg", ".webp", ".jfif", ".bmp", ".tiff")):
         return ocr_image_with_groq(file)
@@ -64,7 +116,15 @@ def extract_text(file):
 
 @app.route("/")
 def index():
-    return send_from_directory("templates", "index.html")
+    return render_template(
+        "index.html",
+        FIREBASE_API_KEY=os.environ.get("FIREBASE_API_KEY", ""),
+        FIREBASE_AUTH_DOMAIN=os.environ.get("FIREBASE_AUTH_DOMAIN", ""),
+        FIREBASE_PROJECT_ID=os.environ.get("FIREBASE_PROJECT_ID", ""),
+        FIREBASE_STORAGE_BUCKET=os.environ.get("FIREBASE_STORAGE_BUCKET", ""),
+        FIREBASE_MESSAGING_SENDER_ID=os.environ.get("FIREBASE_MESSAGING_SENDER_ID", ""),
+        FIREBASE_APP_ID=os.environ.get("FIREBASE_APP_ID", "")
+    )
 
 
 @app.route("/analyze", methods=["POST"])
@@ -173,6 +233,134 @@ Repeat the block above for each medicine. Nothing else.
     except Exception as e:
         print("ERROR in upload_prescription:", str(e))
         return jsonify({"error": str(e)}), 500
+
+
+# ========================================
+# FIREBASE AUTHENTICATION & PROFILE ROUTES
+# ========================================
+
+@app.route("/verify-token", methods=["POST"])
+def verify_token():
+    """Verify Firebase ID token"""
+    if not FIREBASE_ENABLED:
+        return jsonify({'error': 'Firebase not configured'}), 503
+
+    try:
+        token = request.json.get('token')
+        if not token:
+            return jsonify({'error': 'No token provided'}), 401
+
+        decoded = firebase_auth.verify_id_token(token)
+        return jsonify({
+            'success': True,
+            'userId': decoded['uid'],
+            'email': decoded.get('email'),
+            'name': decoded.get('name')
+        })
+    except Exception as e:
+        return jsonify({'error': 'Token verification failed', 'detail': str(e)}), 401
+
+
+@app.route("/save-timeline-entry", methods=["POST"])
+@require_auth
+def save_timeline_entry():
+    """Save a timeline entry to Firestore"""
+    try:
+        data = request.json
+        user_id = request.userId
+
+        entry = {
+            'type': data.get('type'),
+            'title': data.get('title'),
+            'date': data.get('date'),
+            'data': data.get('data', {})
+        }
+
+        # Save to Firestore
+        entry_ref = db.collection('users').document(user_id).collection('timeline').document()
+        entry_ref.set(entry)
+
+        return jsonify({'success': True, 'entryId': entry_ref.id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route("/get-timeline", methods=["POST"])
+@require_auth
+def get_timeline():
+    """Get all timeline entries for a user"""
+    try:
+        user_id = request.userId
+
+        # Fetch timeline entries
+        timeline_ref = db.collection('users').document(user_id).collection('timeline')
+        entries = timeline_ref.order_by('date', direction=firestore.Query.DESCENDING).stream()
+
+        timeline = []
+        for entry in entries:
+            entry_data = entry.to_dict()
+            entry_data['id'] = entry.id
+            timeline.append(entry_data)
+
+        return jsonify(timeline)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route("/save-metrics", methods=["POST"])
+@require_auth
+def save_metrics():
+    """Save health metrics (weight, BP, blood sugar)"""
+    try:
+        data = request.json
+        user_id = request.userId
+
+        metrics_data = {}
+
+        if data.get('weight'):
+            metrics_data['weight'] = {
+                'value': data['weight'],
+                'date': firestore.SERVER_TIMESTAMP
+            }
+
+        if data.get('bloodPressure'):
+            metrics_data['bloodPressure'] = {
+                'value': data['bloodPressure'],
+                'date': firestore.SERVER_TIMESTAMP
+            }
+
+        if data.get('bloodSugar'):
+            metrics_data['bloodSugar'] = {
+                'value': data['bloodSugar'],
+                'date': firestore.SERVER_TIMESTAMP
+            }
+
+        # Save to Firestore
+        metrics_ref = db.collection('users').document(user_id).collection('metrics').document('latest')
+        metrics_ref.set(metrics_data, merge=True)
+
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route("/get-metrics", methods=["POST"])
+@require_auth
+def get_metrics():
+    """Get latest health metrics for a user"""
+    try:
+        user_id = request.userId
+
+        # Fetch metrics
+        metrics_ref = db.collection('users').document(user_id).collection('metrics').document('latest')
+        metrics_doc = metrics_ref.get()
+
+        if metrics_doc.exists:
+            return jsonify(metrics_doc.to_dict())
+        else:
+            return jsonify({})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == "__main__":
