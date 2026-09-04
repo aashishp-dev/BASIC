@@ -1,3 +1,8 @@
 .env
 __pycache__/
 .venv/
+serviceAccountKey.json
+*.json
+!vercel.json
+!package.json
+serviceAccountKey.json
